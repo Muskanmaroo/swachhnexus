@@ -12,22 +12,91 @@ type Ticket = {
   id: string;
   issue: string;
   place: string;
+  city: string;
+  state: string;
   ward: string;
   severity: Severity;
   status: TicketStatus;
   age: string;
   support: number;
+  description?: string;
+  coordinates?: {lat:string;lng:string} | null;
+  citizenSubmitted?: boolean;
 };
 
 const tickets: Ticket[] = [
-  { id: "SRV-107", issue: "Waterlogged waste", place: "Bhawarkuan Main Road", ward: "Ward 74", severity: "Critical", status: "Reported", age: "4 min", support: 3 },
-  { id: "SRV-101", issue: "Clogged drain", place: "Snehlataganj", ward: "Ward 12", severity: "Critical", status: "In progress", age: "28 min", support: 8 },
-  { id: "SRV-106", issue: "Overflowing bin", place: "Malwa Mill Square", ward: "Ward 43", severity: "High", status: "Reported", age: "19 min", support: 2 },
-  { id: "SRV-102", issue: "Waste dumping", place: "Rajwada", ward: "Ward 18", severity: "High", status: "Assigned", age: "42 min", support: 14 },
-  { id: "SRV-098", issue: "Overflowing bin", place: "Juni Indore school gate", ward: "Ward 21", severity: "High", status: "Reported", age: "46 min", support: 5 },
-  { id: "SRV-108", issue: "Road litter", place: "Vijay Nagar Square", ward: "Ward 31", severity: "Medium", status: "Reported", age: "1 hr", support: 1 },
-  { id: "SRV-092", issue: "Public toilet maintenance", place: "Sarwate Bus Stand", ward: "Ward 08", severity: "Medium", status: "Resolved", age: "2 hr", support: 3 },
+  { id: "SRV-107", issue: "Waterlogged waste", place: "Bhawarkuan Main Road", city: "Indore", state: "Madhya Pradesh", ward: "Ward 74", severity: "Critical", status: "Reported", age: "4 min", support: 3 },
+  { id: "SRV-101", issue: "Clogged drain", place: "Snehlataganj", city: "Indore", state: "Madhya Pradesh", ward: "Ward 12", severity: "Critical", status: "In progress", age: "28 min", support: 8 },
+  { id: "SRV-106", issue: "Overflowing bin", place: "Malwa Mill Square", city: "Indore", state: "Madhya Pradesh", ward: "Ward 43", severity: "High", status: "Reported", age: "19 min", support: 2 },
+  { id: "SRV-102", issue: "Waste dumping", place: "Rajwada", city: "Indore", state: "Madhya Pradesh", ward: "Ward 18", severity: "High", status: "Assigned", age: "42 min", support: 14 },
+  { id: "SRV-098", issue: "Overflowing bin", place: "Juni Indore school gate", city: "Indore", state: "Madhya Pradesh", ward: "Ward 21", severity: "High", status: "Reported", age: "46 min", support: 5 },
+  { id: "SRV-108", issue: "Road litter", place: "Vijay Nagar Square", city: "Indore", state: "Madhya Pradesh", ward: "Ward 31", severity: "Medium", status: "Reported", age: "1 hr", support: 1 },
+  { id: "SRV-092", issue: "Public toilet maintenance", place: "Sarwate Bus Stand", city: "Indore", state: "Madhya Pradesh", ward: "Ward 08", severity: "Medium", status: "Resolved", age: "2 hr", support: 3 },
+  { id: "SRV-201", issue: "Waste not collected", place: "Bandra West", city: "Mumbai", state: "Maharashtra", ward: "H/West Ward", severity: "High", status: "Assigned", age: "12 min", support: 11 },
+  { id: "SRV-202", issue: "Road litter", place: "Dadar TT Circle", city: "Mumbai", state: "Maharashtra", ward: "G/North Ward", severity: "Medium", status: "Reported", age: "51 min", support: 6 },
+  { id: "SRV-301", issue: "Clogged drain", place: "Karol Bagh Market", city: "Delhi", state: "Delhi", ward: "Ward 84", severity: "Critical", status: "In progress", age: "17 min", support: 9 },
+  { id: "SRV-302", issue: "Illegal waste dumping", place: "Rohini Sector 11", city: "Delhi", state: "Delhi", ward: "Ward 53", severity: "High", status: "Reported", age: "1 hr", support: 7 },
+  { id: "SRV-401", issue: "Overflowing garbage or bin", place: "Indiranagar 100 Feet Road", city: "Bengaluru", state: "Karnataka", ward: "Ward 80", severity: "High", status: "Assigned", age: "23 min", support: 8 },
+  { id: "SRV-402", issue: "Construction debris", place: "Jayanagar 4th Block", city: "Bengaluru", state: "Karnataka", ward: "Ward 168", severity: "Medium", status: "Reported", age: "2 hr", support: 4 },
+  { id: "SRV-501", issue: "Waterlogging", place: "T. Nagar Bus Depot", city: "Chennai", state: "Tamil Nadu", ward: "Zone 10", severity: "Critical", status: "In progress", age: "31 min", support: 13 },
+  { id: "SRV-601", issue: "Burning waste", place: "Banjara Hills Road 12", city: "Hyderabad", state: "Telangana", ward: "Circle 18", severity: "High", status: "Reported", age: "38 min", support: 5 },
+  { id: "SRV-701", issue: "Waste not collected", place: "Gariahat Crossing", city: "Kolkata", state: "West Bengal", ward: "Ward 68", severity: "High", status: "Assigned", age: "44 min", support: 10 },
+  { id: "SRV-801", issue: "Road litter", place: "C.G. Road", city: "Ahmedabad", state: "Gujarat", ward: "Navrangpura Ward", severity: "Medium", status: "Resolved", age: "3 hr", support: 6 },
+  { id: "SRV-901", issue: "Construction debris", place: "Aundh ITI Road", city: "Pune", state: "Maharashtra", ward: "Aundh-Baner", severity: "Medium", status: "Reported", age: "1 hr", support: 4 },
+  { id: "SRV-1001", issue: "Overflowing garbage or bin", place: "MI Road", city: "Jaipur", state: "Rajasthan", ward: "Ward 74", severity: "High", status: "Reported", age: "2 hr", support: 7 },
+  { id: "SRV-1101", issue: "Clogged drain", place: "Hazratganj", city: "Lucknow", state: "Uttar Pradesh", ward: "Hazratganj Ward", severity: "High", status: "Assigned", age: "1 hr", support: 8 },
+  { id: "SRV-1201", issue: "Public toilet issue", place: "Fort Kochi Bus Stand", city: "Kochi", state: "Kerala", ward: "Fort Kochi", severity: "Medium", status: "Resolved", age: "4 hr", support: 3 },
+  { id: "SRV-1301", issue: "Illegal waste dumping", place: "GS Road", city: "Guwahati", state: "Assam", ward: "Ward 31", severity: "High", status: "Reported", age: "2 hr", support: 5 },
+  { id: "SRV-1401", issue: "Waste not collected", place: "Janpath", city: "Bhubaneswar", state: "Odisha", ward: "Ward 41", severity: "Medium", status: "Assigned", age: "3 hr", support: 4 },
+  { id: "SRV-1501", issue: "Road litter", place: "Sector 17 Plaza", city: "Chandigarh", state: "Chandigarh", ward: "Ward 3", severity: "Medium", status: "Resolved", age: "5 hr", support: 6 },
 ];
+
+const REPORT_STORAGE_KEY = "snx-citizen-reports-v1";
+
+function readCitizenReports(): Ticket[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const value = JSON.parse(window.localStorage.getItem(REPORT_STORAGE_KEY) ?? "[]");
+    return Array.isArray(value) ? value.filter(item => item && typeof item.id === "string" && typeof item.city === "string") : [];
+  } catch {
+    return [];
+  }
+}
+
+function writeCitizenReports(reports: Ticket[]) {
+  window.localStorage.setItem(REPORT_STORAGE_KEY, JSON.stringify(reports));
+  window.dispatchEvent(new Event("snx-reports-updated"));
+}
+
+function useTicketFeed() {
+  const [feed, setFeed] = useState<Ticket[]>(tickets);
+  useEffect(() => {
+    const refresh = () => {
+      const citizenReports = readCitizenReports();
+      const citizenIds = new Set(citizenReports.map(report => report.id));
+      setFeed([...citizenReports, ...tickets.filter(ticket => !citizenIds.has(ticket.id))]);
+    };
+    refresh();
+    window.addEventListener("storage", refresh);
+    window.addEventListener("snx-reports-updated", refresh);
+    return () => {
+      window.removeEventListener("storage", refresh);
+      window.removeEventListener("snx-reports-updated", refresh);
+    };
+  }, []);
+  return feed;
+}
+
+function citySignalRows(feed: Ticket[]) {
+  const grouped = new Map<string, {city:string; state:string; count:number; places:string[]}>();
+  feed.forEach(ticket => {
+    const current = grouped.get(ticket.city) ?? {city:ticket.city,state:ticket.state,count:0,places:[]};
+    current.count += 1;
+    if (!current.places.includes(ticket.place)) current.places.push(ticket.place);
+    grouped.set(ticket.city, current);
+  });
+  return [...grouped.values()].sort((a,b) => b.count - a.count || a.city.localeCompare(b.city, "en-IN"));
+}
 
 const issueCategories = [
   ["Overflowing garbage or bin", "Bin full or waste spilling out", "♲"],
@@ -133,7 +202,7 @@ function Header({ view, language, setLanguage, highContrast, setHighContrast, fo
       <nav className="service-nav" aria-label="Portal sections">
         <div className="portal-shell nav-inner">
           {navItems.map(([key, , href], index) => <a className={view === key ? "active" : ""} href={href} key={key}>{translatedNav[index]}</a>)}
-          <span className="city-online"><i /> Indore demo online</span>
+          <span className="city-online"><i /> Multi-city demo feed</span>
         </div>
       </nav>
     </header>
@@ -173,11 +242,13 @@ function PageBanner({ eyebrow, title, text, action }: { eyebrow: string; title: 
 function HomeView() {
   const [cityOpen, setCityOpen] = useState("Indore");
   const [lookup, setLookup] = useState("");
+  const feed = useTicketFeed();
+  const leaderboard = useMemo(() => citySignalRows(feed), [feed]);
   return <>
     <section className="home-hero">
       <div className="portal-shell home-hero-grid">
         <div className="hero-message">
-          <span className="hero-label">AI-ASSISTED CIVIC RESPONSE · DEMO CITY: INDORE</span>
+          <span className="hero-label">AI-ASSISTED CIVIC RESPONSE · MULTI-CITY PROTOTYPE</span>
           <h1>Cleaner streets start with one clear signal.</h1>
           <p>Report a cleanliness issue, follow the city response, and verify the work—with every step visible.</p>
           <div className="hero-buttons"><a className="portal-button saffron" href="/report">Report an issue <span>→</span></a><a className="portal-button ghost" href="/track">Track my report</a></div>
@@ -218,8 +289,10 @@ function HomeView() {
           <small>Demo reference: SRV-092 · No phone number or OTP required</small>
         </div>
         <div className="city-index panel">
-          <div className="panel-title"><div><span className="panel-tag">CITY SIGNAL INDEX</span><h2>Where citizens are speaking up</h2></div><a href="/map">Full map →</a></div>
-          {[{city:"Indore", count:18, places:"Rajwada · Snehlataganj · Juni Indore"},{city:"Mumbai",count:12,places:"Andheri · Bandra · Dadar"},{city:"Delhi",count:9,places:"Karol Bagh · Rohini · Saket"}].map((row, index) => <button className={cityOpen === row.city ? "open" : ""} onClick={() => setCityOpen(cityOpen === row.city ? "" : row.city)} key={row.city}><i>#{index + 1}</i><span><b>{row.city}</b><small>{cityOpen === row.city ? row.places : "View area breakdown"}</small></span><strong>{row.count}<small>signals</small></strong><em>{cityOpen === row.city ? "−" : "+"}</em></button>)}
+          <div className="panel-title"><div><span className="panel-tag">ALL-CITY SIGNAL LEADERBOARD</span><h2>Every city with a reported problem</h2><p>{leaderboard.length} demo cities · updates when you submit a report on this device</p></div><a href="/map">Explore map →</a></div>
+          <div className="city-index-list">
+            {leaderboard.map((row, index) => <button className={cityOpen === row.city ? "open" : ""} onClick={() => setCityOpen(cityOpen === row.city ? "" : row.city)} key={row.city}><i>#{index + 1}</i><span><b>{row.city}</b><small>{cityOpen === row.city ? `${row.places.slice(0,3).join(" · ")} · ${row.state}` : `${row.state} · View area breakdown`}</small></span><strong>{row.count}<small>signals</small></strong><em>{cityOpen === row.city ? "−" : "+"}</em></button>)}
+          </div>
         </div>
       </section>
 
@@ -243,6 +316,7 @@ function ReportView() {
   const [cityOpen, setCityOpen] = useState(false);
   const [cityActive, setCityActive] = useState(0);
   const [submitted, setSubmitted] = useState(false);
+  const [submittedReference, setSubmittedReference] = useState("");
   const selectedIssue = issueCategory === "Other" ? customIssue.trim() : issueCategory;
   const canDescribe = Boolean(selectedIssue) && (issueCategory !== "Other" || customIssue.trim().length >= 3);
   const canContinue = canDescribe && Boolean(locality.trim() && stateName && city.trim());
@@ -270,6 +344,29 @@ function ReportView() {
   }
   function choosePhoto(e: ChangeEvent<HTMLInputElement>) { const file = e.target.files?.[0]; if (file) setPhoto(file.name); }
   function chooseCity(place: string) { setCity(place); setCityOpen(false); setCityActive(0); }
+  function submitReport() {
+    const now = new Date();
+    const dateCode = `${String(now.getFullYear()).slice(-2)}${String(now.getMonth()+1).padStart(2,"0")}${String(now.getDate()).padStart(2,"0")}`;
+    const reference = `SNX-${dateCode}-${String(now.getTime()).slice(-4)}`;
+    const report: Ticket = {
+      id: reference,
+      issue: selectedIssue,
+      description: description.trim(),
+      place: locality.trim(),
+      city: city.trim(),
+      state: stateName,
+      ward: "Routing review pending",
+      severity: "High",
+      status: "Reported",
+      age: "Just now",
+      support: 1,
+      coordinates: coords,
+      citizenSubmitted: true,
+    };
+    writeCitizenReports([report, ...readCitizenReports().filter(item => item.id !== report.id)]);
+    setSubmittedReference(reference);
+    setSubmitted(true);
+  }
   function handleCityKeys(event: KeyboardEvent<HTMLInputElement>) {
     if (event.key === "Escape") { setCityOpen(false); return; }
     if (event.key === "ArrowDown") { event.preventDefault(); setCityOpen(true); setCityActive(current => Math.min(current + 1, Math.max(cityMatches.length - 1, 0))); }
@@ -323,27 +420,38 @@ function ReportView() {
           <div className="review-summary"><div><span>YOUR REPORT · {selectedIssue}</span><b>{description || "No extra details added"}</b><small>⌖ {locality}, {city}, {stateName}</small></div><button type="button" onClick={() => setStep(1)}>Edit details</button></div>
         </div>}
 
-        {submitted && <div className="success-receipt" role="status"><i>✓</i><span>REPORT REFERENCE</span><h2>SNX-260825-1042</h2><p>Your simulated report has been created and routed to Ward 18 Sanitation.</p><div><a className="portal-button dark" href="/track?ref=SNX-260825-1042">Open tracking timeline →</a><button type="button" onClick={() => {setSubmitted(false);setStep(1);}}>Create another</button></div><small>Save the reference number. No login or OTP is required in this demo.</small></div>}
+        {submitted && <div className="success-receipt" role="status"><i>✓</i><span>REPORT REFERENCE</span><h2>{submittedReference}</h2><p>Your demo report is now visible in the {city} map and officer queue on this browser.</p><div className="receipt-actions"><a className="portal-button dark" href={`/map?city=${encodeURIComponent(city)}&ref=${encodeURIComponent(submittedReference)}`}>View on city map →</a><a className="portal-button saffron" href={`/dashboard?city=${encodeURIComponent(city)}&ref=${encodeURIComponent(submittedReference)}`}>Open officer queue →</a><a href={`/track?ref=${encodeURIComponent(submittedReference)}`}>Track report</a><button type="button" onClick={() => {setSubmitted(false);setSubmittedReference("");setStep(1);}}>Create another</button></div><small>Prototype note: the report is stored only in this browser and is not sent to a municipality.</small></div>}
 
-        {!submitted && <div className="form-actions"><button type="button" className="back-button" disabled={step === 1} onClick={() => setStep(step - 1)}>← Back</button>{step < 3 ? <button type="button" className="portal-button dark" disabled={step === 1 ? !canDescribe : !canContinue} onClick={() => setStep(step + 1)}>Save & continue →</button> : <button type="button" className="portal-button saffron" onClick={() => setSubmitted(true)}>Confirm & create report →</button>}</div>}
+        {!submitted && <div className="form-actions"><button type="button" className="back-button" disabled={step === 1} onClick={() => setStep(step - 1)}>← Back</button>{step < 3 ? <button type="button" className="portal-button dark" disabled={step === 1 ? !canDescribe : !canContinue} onClick={() => setStep(step + 1)}>Save & continue →</button> : <button type="button" className="portal-button saffron" onClick={submitReport}>Confirm & create report →</button>}</div>}
       </section>
     </div>
   </main>;
 }
 
 function TrackView() {
+  const feed = useTicketFeed();
   const [reference, setReference] = useState("SRV-092");
   const [searched, setSearched] = useState(true);
   const [compare, setCompare] = useState(50);
   const [feedback, setFeedback] = useState("");
+  const matched = feed.find(ticket => ticket.id.toLocaleLowerCase("en-IN") === reference.trim().toLocaleLowerCase("en-IN"));
+  const stages: TicketStatus[] = ["Reported","Assigned","In progress","Resolved"];
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const fromUrl = new URLSearchParams(window.location.search).get("ref");
+      if (fromUrl) setReference(fromUrl);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
   return <main id="main-content">
     <PageBanner eyebrow="PUBLIC STATUS SERVICE" title="Track and verify a report" text="See where a report was routed, how its status changed, and the evidence used to close it." />
     <section className="portal-shell track-page">
       <div className="track-search panel"><label htmlFor="track-ref">Report reference number</label><div><input id="track-ref" value={reference} onChange={e => setReference(e.target.value)} placeholder="Example: SRV-092" /><button onClick={() => setSearched(Boolean(reference.trim()))}>Check status →</button></div><small>Try SRV-092 · No login, phone number or OTP required</small></div>
-      {searched && <>
-        <div className="track-summary panel"><div className="reference-head"><div><span>REPORT REFERENCE</span><h2>{reference.toUpperCase()}</h2></div><b>✓ RESOLVED</b></div><div className="ticket-overview"><div><span>Issue</span><b>Public toilet maintenance</b><small>Sarwate Bus Stand, Indore</small></div><div><span>Responsible team</span><b>Ward 08 Sanitation</b><small>Demo routing only</small></div><div><span>Reported</span><b>25 Aug · 08:32</b><small>Resolved in 3h 44m</small></div></div>
-          <div className="status-timeline">{[["Reported","08:32","Citizen signal received"],["Assigned","08:41","Routed to Ward 08"],["In progress","09:18","Team reached location"],["Resolved","12:16","Evidence verified"]].map(([s,time,d],i) => <article key={s}><i>✓</i><div><b>{s}</b><span>25 Aug · {time}</span><small>{d}</small></div>{i < 3 && <em />}</article>)}</div></div>
-        <div className="proof-card panel"><div className="proof-heading"><div><span>RESOLUTION EVIDENCE</span><h2>Proof closes the loop.</h2><p>Move the slider to compare the reported scene with the resolution evidence.</p></div><b>✓ Verified by ward supervisor</b></div><div className="compare-stage"><div className="photo-scene after-scene"><img src="/evidence-after.jpg" alt="Clean public footpath after waste removal"/><span>RESOLVED · 12:16</span></div><div className="photo-scene before-scene" style={{clipPath:`inset(0 ${100-compare}% 0 0)`}}><img src="/evidence-before.jpg" alt="Overflowing waste blocking a public footpath before cleanup"/><span>REPORTED · 08:32</span></div><div className="compare-line" style={{left:`${compare}%`}}><i>↔</i></div><input aria-label="Compare reported and resolved photos" type="range" min="4" max="96" value={compare} onChange={e => setCompare(Number(e.target.value))} /></div><p className="proof-disclaimer">Demo evidence · AI-generated matched photographs · no real citizen or location data</p><div className="citizen-feedback"><b>Does the evidence show the issue is resolved?</b><div><button className={feedback === "yes" ? "active" : ""} onClick={() => setFeedback("yes")}>✓ Yes, resolved</button><button className={feedback === "review" ? "active warning" : ""} onClick={() => setFeedback("review")}>↻ Request review</button></div>{feedback && <p role="status">✓ {feedback === "yes" ? "Citizen confirmation recorded in the demo." : "Review request added to the simulated queue."}</p>}</div></div>
+      {searched && !matched && <div className="track-empty panel" role="status"><i>⌕</i><h2>Report not found on this browser</h2><p>Check the reference number. Citizen-created demo reports are available only on the device where they were submitted.</p></div>}
+      {searched && matched && <>
+        <div className="track-summary panel"><div className="reference-head"><div><span>REPORT REFERENCE</span><h2>{matched.id}</h2></div><b>✓ {matched.status.toUpperCase()}</b></div><div className="ticket-overview"><div><span>Issue</span><b>{matched.issue}</b><small>{matched.place}, {matched.city}</small></div><div><span>Responsible team</span><b>{matched.ward}</b><small>Demo routing only</small></div><div><span>Report source</span><b>{matched.citizenSubmitted ? "Citizen demo submission" : "Synthetic demo record"}</b><small>{matched.age}</small></div></div>
+          <div className="status-timeline">{stages.map((stage,i) => { const reached = i <= stages.indexOf(matched.status); return <article className={reached ? "" : "pending"} key={stage}><i>{reached ? "✓" : i+1}</i><div><b>{stage}</b><span>{reached ? (stage === matched.status ? "Current status" : "Completed") : "Waiting"}</span><small>{stage === "Reported" ? "Citizen signal received" : stage === "Assigned" ? "Routed to response team" : stage === "In progress" ? "Team action underway" : "Evidence verified"}</small></div>{i < 3 && <em />}</article>})}</div></div>
+        {matched.status === "Resolved" ? <div className="proof-card panel"><div className="proof-heading"><div><span>RESOLUTION EVIDENCE</span><h2>Proof closes the loop.</h2><p>Move the slider to compare the reported scene with the resolution evidence.</p></div><b>✓ Verified by ward supervisor</b></div><div className="compare-stage"><div className="photo-scene after-scene"><img src="/evidence-after.jpg" alt="Clean public footpath after waste removal"/><span>RESOLVED · DEMO</span></div><div className="photo-scene before-scene" style={{clipPath:`inset(0 ${100-compare}% 0 0)`}}><img src="/evidence-before.jpg" alt="Overflowing waste blocking a public footpath before cleanup"/><span>REPORTED · DEMO</span></div><div className="compare-line" style={{left:`${compare}%`}}><i>↔</i></div><input aria-label="Compare reported and resolved photos" type="range" min="4" max="96" value={compare} onChange={e => setCompare(Number(e.target.value))} /></div><p className="proof-disclaimer">Demo evidence · AI-generated matched photographs · no real citizen or location data</p><div className="citizen-feedback"><b>Does the evidence show the issue is resolved?</b><div><button className={feedback === "yes" ? "active" : ""} onClick={() => setFeedback("yes")}>✓ Yes, resolved</button><button className={feedback === "review" ? "active warning" : ""} onClick={() => setFeedback("review")}>↻ Request review</button></div>{feedback && <p role="status">✓ {feedback === "yes" ? "Citizen confirmation recorded in the demo." : "Review request added to the simulated queue."}</p>}</div></div> : <div className="active-report-note panel"><i>↻</i><div><span>LIVE DEMO STATUS</span><h2>This report is now in the shared prototype queue.</h2><p>Open the city map or officer dashboard to see the same record and advance its simulated response status.</p></div><a href={`/map?city=${encodeURIComponent(matched.city)}&ref=${encodeURIComponent(matched.id)}`}>View on map →</a></div>}
       </>}
     </section>
   </main>;
@@ -351,20 +459,47 @@ function TrackView() {
 
 function MapView() {
   const [filter, setFilter] = useState("All");
-  const [selected, setSelected] = useState<Ticket>(tickets[1]);
-  const filtered = filter === "All" ? tickets : tickets.filter(t => t.status === filter);
+  const feed = useTicketFeed();
+  const cities = useMemo(() => citySignalRows(feed), [feed]);
+  const [city, setCity] = useState("Indore");
+  const [selectedId, setSelectedId] = useState("SRV-101");
+  const cityTickets = useMemo(() => feed.filter(ticket => ticket.city === city), [feed, city]);
+  const filtered = filter === "All" ? cityTickets : cityTickets.filter(t => t.status === filter);
+  const neighbourhoods = cityTickets.slice(0,4).map(ticket => ticket.place.toUpperCase());
+  const selected = cityTickets.find(ticket => ticket.id === selectedId) ?? cityTickets[0] ?? tickets[0];
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      const requestedCity = params.get("city");
+      const requestedRef = params.get("ref");
+      if (requestedCity) setCity(requestedCity);
+      if (requestedRef) setSelectedId(requestedRef);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
+  function chooseMapCity(value:string) {
+    setCity(value);
+    setFilter("All");
+    const first = feed.find(ticket => ticket.city === value);
+    if (first) setSelectedId(first.id);
+  }
   return <main id="main-content" className="map-page">
-    <PageBanner eyebrow="CITY SIGNAL MAP · SIMULATED" title="Every signal has a place." text="Explore synthetic cleanliness reports around Indore. Select a marker or filter the public queue." action={<div className="map-legend"><span><i className="critical-bg"/>Critical</span><span><i className="high-bg"/>High</span><span><i className="medium-bg"/>Medium</span></div>} />
+    <PageBanner eyebrow="MULTI-CITY SIGNAL MAP · SIMULATED" title="Every signal has a place." text="Switch between cities, inspect synthetic civic signals, and see a newly submitted demo report appear instantly." action={<div className="map-legend"><span><i className="critical-bg"/>Critical</span><span><i className="high-bg"/>High</span><span><i className="medium-bg"/>Medium</span></div>} />
+    <section className="city-switcher portal-shell" aria-label="Map city selection">
+      <div><span>VIEWING CITY</span><label><i>⌖</i><select aria-label="Select city on live demo map" value={city} onChange={event => chooseMapCity(event.target.value)}>{cities.map(row => <option value={row.city} key={row.city}>{row.city}, {row.state} · {row.count} {row.count === 1 ? "signal" : "signals"}</option>)}</select></label></div>
+      <div className="scope-note"><i>i</i><span><b>Interactive prototype feed</b><small>{cityTickets.length} reports in {city}. Citizen submissions are stored on this browser only—not lodged with a municipality.</small></span></div>
+    </section>
     <section className="map-app">
       <aside className="map-sidebar">
-        <div className="map-filter">{["All","Reported","Assigned","In progress","Resolved"].map(x => <button className={filter === x ? "active" : ""} onClick={() => setFilter(x)} key={x}>{x}{x === "All" && <b>{tickets.length}</b>}</button>)}</div>
-        <div className="map-list">{filtered.map(t => <button className={selected.id === t.id ? "active" : ""} onClick={() => setSelected(t)} key={t.id}><i className={`${t.severity.toLowerCase()}-bg`}/><span><small>{t.id} · {t.age}</small><b>{t.issue}</b><em>⌖ {t.place}</em></span><strong>{t.status}</strong></button>)}</div>
+        <div className="map-filter">{["All","Reported","Assigned","In progress","Resolved"].map(x => <button className={filter === x ? "active" : ""} onClick={() => setFilter(x)} key={x}>{x}{x === "All" && <b>{cityTickets.length}</b>}</button>)}</div>
+        <div className="map-list">{filtered.map(t => <button className={selected.id === t.id ? "active" : ""} onClick={() => setSelectedId(t.id)} key={t.id}><i className={`${t.severity.toLowerCase()}-bg`}/><span><small>{t.id} · {t.age}</small><b>{t.issue}</b><em>⌖ {t.place}</em></span><strong>{t.status}</strong></button>)}{!filtered.length && <div className="empty-report-state"><i>⌕</i><b>No {filter.toLowerCase()} reports in {city}</b><small>Try another status filter.</small></div>}</div>
       </aside>
-      <div className="large-civic-map" aria-label="Interactive illustrative Indore cleanliness map">
+      <div className="large-civic-map" aria-label={`Interactive illustrative ${city} cleanliness map`}>
         <span className="grid-road gr-a"/><span className="grid-road gr-b"/><span className="grid-road gr-c"/><span className="grid-road gr-d"/>
-        <span className="neighbourhood nh-a">RAJWADA</span><span className="neighbourhood nh-b">SNEHLATAGANJ</span><span className="neighbourhood nh-c">SARWATE</span><span className="neighbourhood nh-d">VIJAY NAGAR</span>
-        {tickets.slice(0,6).map((t,i) => <button aria-label={`${t.severity} report ${t.id}`} className={`large-map-pin lmp-${i} ${t.severity.toLowerCase()}-bg ${selected.id === t.id ? "selected" : ""}`} onClick={() => setSelected(t)} key={t.id}><i>{t.support}</i></button>)}
-        <div className="map-detail"><div><span className={`${selected.severity.toLowerCase()}-text`}>{selected.severity.toUpperCase()} · {selected.id}</span><button aria-label="Close report details">×</button></div><h3>{selected.issue}</h3><p>⌖ {selected.place}, Indore</p><dl><div><dt>Ward</dt><dd>{selected.ward}</dd></div><div><dt>Status</dt><dd>{selected.status}</dd></div><div><dt>Citizen support</dt><dd>{selected.support}</dd></div></dl><a href={`/track?ref=${selected.id}`}>Open public timeline →</a></div>
+        <span className="map-city-watermark">{city}</span>
+        {neighbourhoods.map((name,index) => <span className={`neighbourhood nh-${["a","b","c","d"][index]}`} key={name}>{name}</span>)}
+        {cityTickets.slice(0,6).map((t,i) => <button aria-label={`${t.severity} report ${t.id}`} className={`large-map-pin lmp-${i} ${t.severity.toLowerCase()}-bg ${selected.id === t.id ? "selected" : ""}`} onClick={() => setSelectedId(t.id)} key={t.id}><i>{t.support}</i></button>)}
+        {selected && selected.city === city && <div className="map-detail"><div><span className={`${selected.severity.toLowerCase()}-text`}>{selected.severity.toUpperCase()} · {selected.id}</span><span className="live-feed-badge">{selected.citizenSubmitted ? "NEW CITIZEN REPORT" : "DEMO DATA"}</span></div><h3>{selected.issue}</h3><p>⌖ {selected.place}, {selected.city}</p><dl><div><dt>Route</dt><dd>{selected.ward}</dd></div><div><dt>Status</dt><dd>{selected.status}</dd></div><div><dt>Citizen support</dt><dd>{selected.support}</dd></div></dl><a href={`/track?ref=${selected.id}`}>Open public timeline →</a></div>}
         <div className="map-controls"><button>＋</button><button>−</button><button>◎</button></div><div className="map-north">N<br/>↑</div>
       </div>
     </section>
@@ -372,27 +507,53 @@ function MapView() {
 }
 
 function DashboardView() {
-  const [queue, setQueue] = useState(tickets.slice(0,6));
+  const feed = useTicketFeed();
+  const [statusOverrides, setStatusOverrides] = useState<Record<string,TicketStatus>>({});
+  const queue = useMemo(() => feed.map(ticket => statusOverrides[ticket.id] ? {...ticket,status:statusOverrides[ticket.id]} : ticket), [feed, statusOverrides]);
   const [severity, setSeverity] = useState("All priorities");
-  const [selected, setSelected] = useState(queue[0]);
-  const shown = severity === "All priorities" ? queue : queue.filter(t => t.severity === severity);
+  const [city, setCity] = useState("All cities");
+  const [selectedId, setSelectedId] = useState(tickets[0].id);
+  const cities = useMemo(() => citySignalRows(queue), [queue]);
+  const cityQueue = city === "All cities" ? queue : queue.filter(ticket => ticket.city === city);
+  const shown = severity === "All priorities" ? cityQueue : cityQueue.filter(t => t.severity === severity);
+  const selected = queue.find(ticket => ticket.id === selectedId) ?? cityQueue[0] ?? queue[0];
+  useEffect(() => {
+    const timer = window.setTimeout(() => {
+      const params = new URLSearchParams(window.location.search);
+      const requestedCity = params.get("city");
+      const requestedRef = params.get("ref");
+      if (requestedCity) setCity(requestedCity);
+      if (requestedRef) setSelectedId(requestedRef);
+    }, 0);
+    return () => window.clearTimeout(timer);
+  }, []);
   const advance = (id:string) => {
     const order:TicketStatus[] = ["Reported","Assigned","In progress","Resolved"];
-    setQueue(current => current.map(t => t.id === id ? {...t,status:order[Math.min(order.indexOf(t.status)+1,3)]} : t));
-    setSelected(current => current.id === id ? {...current,status:order[Math.min(order.indexOf(current.status)+1,3)]} : current);
+    const target = queue.find(ticket => ticket.id === id);
+    if (!target) return;
+    const nextStatus = order[Math.min(order.indexOf(target.status)+1,3)];
+    setStatusOverrides(current => ({...current,[id]:nextStatus}));
+    const stored = readCitizenReports();
+    if (stored.some(ticket => ticket.id === id)) writeCitizenReports(stored.map(ticket => ticket.id === id ? {...ticket,status:nextStatus} : ticket));
   };
+  function chooseDashboardCity(value:string) {
+    setCity(value);
+    const first = value === "All cities" ? queue[0] : queue.find(ticket => ticket.city === value);
+    if (first) setSelectedId(first.id);
+  }
   return <main id="main-content" className="dashboard-page">
-    <PageBanner eyebrow="WARD OPERATIONS · AUTHORISED DEMO VIEW" title="Act on severity, not chronology." text="A decision workspace for ward teams, with suggested priority, ownership and resolution evidence." action={<button className="portal-button light">Export daily brief ↗</button>} />
+    <PageBanner eyebrow="MULTI-CITY OPERATIONS · AUTHORISED DEMO VIEW" title="Act on severity, not chronology." text="Switch between participating demo cities and review the same civic signals citizens see on the public map." action={<button className="portal-button light">Export daily brief ↗</button>} />
     <section className="portal-shell dashboard-content">
-      <div className="metric-grid">{[["Open queue","6","Across demo wards","inbox"],["Critical","2","Rapid review","alert"],["Resolved today","12","Evidence attached","check"],["Median response","3.2h","Illustrative metric","clock"]].map(([l,v,d,c]) => <article className={c} key={l}><div><span>{l}</span><b>{v}</b><small>{d}</small></div><i>{c === "inbox" ? "▣" : c === "alert" ? "!" : c === "check" ? "✓" : "◷"}</i></article>)}</div>
+      <div className="officer-city-bar"><div><span>OFFICER JURISDICTION</span><label><i>⌖</i><select aria-label="Choose officer city dashboard" value={city} onChange={event => chooseDashboardCity(event.target.value)}><option>All cities</option>{cities.map(row => <option value={row.city} key={row.city}>{row.city}, {row.state} · {row.count}</option>)}</select></label></div><p><b>{city === "All cities" ? `${cities.length} demo cities` : city}</b><small>Citizen reports saved on this browser join this queue automatically.</small></p></div>
+      <div className="metric-grid">{[["Open queue",String(cityQueue.filter(ticket => ticket.status !== "Resolved").length,10),city === "All cities" ? "Across demo cities" : `In ${city}`,"inbox"],["Critical",String(cityQueue.filter(ticket => ticket.severity === "Critical").length,10),"Rapid review","alert"],["Resolved",String(cityQueue.filter(ticket => ticket.status === "Resolved").length,10),"Evidence attached","check"],["Citizen-created",String(cityQueue.filter(ticket => ticket.citizenSubmitted).length,10),"This browser","clock"]].map(([l,v,d,c]) => <article className={c} key={l}><div><span>{l}</span><b>{v}</b><small>{d}</small></div><i>{c === "inbox" ? "▣" : c === "alert" ? "!" : c === "check" ? "✓" : "◷"}</i></article>)}</div>
       <div className="dashboard-grid">
         <section className="queue-panel panel">
-          <div className="queue-toolbar"><div><span>AI-PRIORITISED RESPONSE QUEUE</span><h2>Open civic signals</h2></div><div><select value={severity} onChange={e => setSeverity(e.target.value)}><option>All priorities</option><option>Critical</option><option>High</option><option>Medium</option></select><button>⌕</button></div></div>
+          <div className="queue-toolbar"><div><span>AI-PRIORITISED RESPONSE QUEUE</span><h2>{city === "All cities" ? "All civic signals" : `${city} civic signals`}</h2></div><div><select value={severity} onChange={e => setSeverity(e.target.value)}><option>All priorities</option><option>Critical</option><option>High</option><option>Medium</option></select><button aria-label="Search queue">⌕</button></div></div>
           <div className="queue-columns"><span>Signal</span><span>Location & route</span><span>Status</span><span>Action</span></div>
-          <div className="dashboard-queue">{shown.map(t => <article className={selected.id === t.id ? "selected" : ""} onClick={() => setSelected(t)} key={t.id}><div><i className={`${t.severity.toLowerCase()}-bg`}/><span><small>{t.id} · {t.age}</small><b>{t.issue}</b><em className={`${t.severity.toLowerCase()}-text`}>{t.severity}</em></span></div><div><b>{t.place}</b><small>{t.ward} · Sanitation team</small></div><span className={`queue-status ${t.status.toLowerCase().replace(" ","-")}`}>{t.status}</span><button onClick={e => {e.stopPropagation();advance(t.id);}} disabled={t.status === "Resolved"}>{t.status === "Resolved" ? "Complete" : "Advance →"}</button></article>)}</div>
+          <div className="dashboard-queue">{shown.map(t => <article className={selected.id === t.id ? "selected" : ""} key={t.id}><button type="button" className="queue-select" onClick={() => setSelectedId(t.id)} aria-label={`Inspect ${t.id}, ${t.issue}`}><i className={`${t.severity.toLowerCase()}-bg`}/><span><small>{t.id} · {t.age}{t.citizenSubmitted ? " · NEW" : ""}</small><b>{t.issue}</b><em className={`${t.severity.toLowerCase()}-text`}>{t.severity}</em></span></button><div><b>{t.place}, {t.city}</b><small>{t.ward} · Sanitation team</small></div><span className={`queue-status ${t.status.toLowerCase().replace(" ","-")}`}>{t.status}</span><button onClick={() => advance(t.id)} disabled={t.status === "Resolved"}>{t.status === "Resolved" ? "Complete" : "Advance →"}</button></article>)}{!shown.length && <div className="empty-report-state"><i>⌕</i><b>No matching reports</b><small>Change the city or priority filter.</small></div>}</div>
         </section>
         <aside className="ticket-inspector panel">
-          <div className="inspector-head"><span>SELECTED SIGNAL</span><b className={`${selected.severity.toLowerCase()}-text`}>{selected.severity}</b></div><h2>{selected.id}</h2><p>{selected.issue}</p><div className="inspector-map"><span/><i>⌖</i><b>{selected.place}</b></div><dl><div><dt>Suggested owner</dt><dd>Sanitation team · {selected.ward}</dd></div><div><dt>Citizen support</dt><dd>{selected.support} people</dd></div><div><dt>Duplicate confidence</dt><dd>87% · human review</dd></div></dl><button className="portal-button dark" onClick={() => advance(selected.id)} disabled={selected.status === "Resolved"}>{selected.status === "Resolved" ? "Resolution complete" : `Move from ${selected.status} →`}</button><small>AI suggests. A ward officer remains responsible for every action.</small>
+          <div className="inspector-head"><span>SELECTED SIGNAL</span><b className={`${selected.severity.toLowerCase()}-text`}>{selected.severity}</b></div><h2>{selected.id}</h2><p>{selected.issue}</p><div className="inspector-map"><span/><i>⌖</i><b>{selected.place}, {selected.city}</b></div><dl><div><dt>Suggested owner</dt><dd>Sanitation team · {selected.ward}</dd></div><div><dt>Citizen support</dt><dd>{selected.support} people</dd></div><div><dt>Data source</dt><dd>{selected.citizenSubmitted ? "Citizen demo submission" : "Synthetic demo record"}</dd></div></dl><button className="portal-button dark" onClick={() => advance(selected.id)} disabled={selected.status === "Resolved"}>{selected.status === "Resolved" ? "Resolution complete" : `Move from ${selected.status} →`}</button><small>AI suggests. A ward officer remains responsible for every action.</small>
         </aside>
       </div>
       <div className="insight-grid">
@@ -419,7 +580,7 @@ function FutureView() {
 }
 
 function Footer() {
-  return <footer className="portal-footer"><div className="portal-shell footer-main"><div className="portal-brand footer-brand"><span className="portal-symbol">स</span><span><b>SwachhNexus</b><small>Cleaner streets. Clearer accountability.</small></span></div><div><b>Citizen services</b><a href="/report">Report an issue</a><a href="/track">Track a report</a><a href="/map">City signal map</a></div><div><b>Operations</b><a href="/dashboard">Officer dashboard</a><a href="/future">Future integrations</a><span>Demo city: Indore</span></div><div><b>Prototype standards</b><span>Accessible by design</span><span>Consent before location</span><span>Human decision-making</span></div></div><div className="portal-shell footer-note"><span>Independent prototype for Build What Moves India 2026 · Built with Codex</span><span>All data and authority actions are simulated</span></div></footer>;
+  return <footer className="portal-footer"><div className="portal-shell footer-main"><div className="portal-brand footer-brand"><span className="portal-symbol">स</span><span><b>SwachhNexus</b><small>Cleaner streets. Clearer accountability.</small></span></div><div><b>Citizen services</b><a href="/report">Report an issue</a><a href="/track">Track a report</a><a href="/map">City signal map</a></div><div><b>Operations</b><a href="/dashboard">Officer dashboard</a><a href="/future">Future integrations</a><span>Coverage: multi-city prototype</span></div><div><b>Prototype standards</b><span>Accessible by design</span><span>Consent before location</span><span>Human decision-making</span></div></div><div className="portal-shell footer-note"><span>Independent prototype for Build What Moves India 2026 · Built with Codex</span><span>All data and authority actions are simulated · reports remain browser-local</span></div></footer>;
 }
 
 export default function PortalPage({ view }: { view: PortalView }) {
