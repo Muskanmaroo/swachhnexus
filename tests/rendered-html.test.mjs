@@ -70,7 +70,9 @@ test("ships interaction, accessibility, responsive and social-preview assets", a
   assert.match(page, /Decrease text size/);
   assert.match(page, /evidence-before\.jpg/);
   assert.match(page, /evidence-after\.jpg/);
-  assert.match(page, /setQueue/);
+  assert.match(page, /useTicketFeed/);
+  assert.match(page, /REPORT_STORAGE_KEY/);
+  assert.match(page, /Choose officer city dashboard/);
   assert.match(css, /prefers-reduced-motion:\s*reduce/);
   assert.match(css, /@media \(max-width: 760px\)/);
   assert.match(css, /\.city-results/);
